@@ -182,7 +182,7 @@ export default function Home(p) {
     setAppendStr(appendStr)
   },[selectedTab,selectionValues])
 
-  return <Container><Tabs variant="dark" className="mb-3" onSelect={(e)=>{setSelectedTab(e)}}>
+  return <Container><Tabs className="mb-3" onSelect={(e)=>{setSelectedTab(e)}}>
     {CATEGORIES.map((cat)=><Tab key={cat.id} eventKey={cat.id} title={cat.name} id={cat.name}>
       {/*cat.rules*/}
       {VARIABLES.filter((v)=>(v.category===cat.id||v.category===null)&&v["is-subcategory"]).map((v,i)=><VariableSelector key={v.id} category={cat} selectionID={i} selectionValues={selectionValues} setSelectionValues={setSelectionValues} values={v}/>)}
