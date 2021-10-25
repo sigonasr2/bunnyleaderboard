@@ -14,3 +14,7 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.scoreboard_icon{
+  border: 0px;
+}

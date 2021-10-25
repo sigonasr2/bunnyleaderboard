@@ -6,6 +6,8 @@ import ToggleButtonGroup from 'react-bootstrap/ButtonGroup'
 import ToggleButton from 'react-bootstrap/Button'
 import useSWR from 'swr'
 import Table from 'react-bootstrap/Table'
+import Spinner from 'react-bootstrap/Spinner'
+import {CameraReelsFill} from 'react-bootstrap-icons'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -44,6 +46,71 @@ function getLeaderboard(categoryID,variables) {
   }
 }
 
+function getPlatform(platformID) {
+  const { data,error } = useSWR("https://www.speedrun.com/api/v1/platforms/"+platformID,fetcher)
+
+  return {
+    platform: data?.data.name,
+    isLoading: !error && !data,
+    isError: error
+  }
+}
+
+function getVersion(versionID) {
+  const { data,error } = useSWR("https://www.speedrun.com/api/v1/variables/p85me3lg",fetcher)
+
+  return {
+    version: data?.data.values.values[versionID].label,
+    isLoading: !error && !data,
+    isError: error
+  }
+}
+
+function getPlayer(playerID) {
+  const { data,error } = useSWR("https://www.speedrun.com/api/v1/users/"+playerID,fetcher)
+  return {
+    name: data?.data.names.international,
+    link: data?.data.weblink,
+    color1: data?.data["name-style"]["color-from"]?.dark,
+    color2: data?.data["name-style"]["color-to"]?.dark,
+    country_code: data?.data.location?.country.code,
+    country_name: data?.data.location?.country.names.international,
+    twitch: data?.data.twitch?.uri,
+    youtube: data?.data.youtube?.uri,
+    icon: data?.data.assets.icon.uri,
+    image: data?.data.assets.image.uri,
+    isLoading: !error && !data,
+    isError: error
+  }
+}
+
+function Player(p) {
+  const {data}=p
+  const playerData=getPlayer(data.id)
+  return <><img className="scoreboard_icon" width={24} height={24} src={playerData.icon??playerData.image}/> {data.rel==="guest"?data.name:playerData.name}</>
+}
+
+function TimeDisplay(time) {
+  const hrs = Math.floor(time/3600)>0?Math.floor(time/3600):"";
+  const min = Math.floor(time/60)>0?Math.floor(time/60%60):"00";
+  const sec = Math.floor(time%60)>0?Math.floor(time%60):"00";
+  const millis = time%1>0?Math.round(time%1*1000):"";
+
+  return <>{(hrs>0?hrs+":":"")+min.toLocaleString('en-US',{minimumIntegerDigits:2})+":"+sec.toLocaleString('en-US',{minimumIntegerDigits:2})}<span className="bl-5" style={{width:"25px"}}>{millis>0&&<sub>{"."+millis.toLocaleString('en-US',{minimumIntegerDigits:3})+""}</sub>}</span></>
+}
+
+function Platform(p) {
+  const {data} = p 
+  const playerData=getPlatform(data)
+  return <>{playerData.platform??""}</>
+}
+
+function Version(p) {
+  const {data} = p
+  const versionData=getVersion(data)
+  return <>{versionData.version??""}</>
+}
+
 function Leaderboard(p) {
   const {data} = p
   return <Table striped bordered hover size="sm">
@@ -60,15 +127,15 @@ function Leaderboard(p) {
       </tr>
     </thead>
     <tbody>
-    {data?.data.runs.map((run)=><tr key={run.run.id}>
+    {!data?<tr><td colSpan="8"><Spinner animation="grow" />Buns are loading...</td></tr>:data?.data.runs.map((run)=><tr key={run.run.id}>
       <td>{run.place}</td>{/*#*/}
-      <td>{run.run.players[0].id??run.run.players[0]?.name}</td>{/*Player*/}
-      <td>{run.run.times.realtime_noloads_t??""}</td>{/*Time without loads*/}
-      <td>{run.run.times.realtime_t}</td>{/*Time with loads*/}
-      <td>{run.run.system.platform}</td>{/*Platform*/}
-      <td>{run.run.values.p85me3lg}</td>{/*Version*/}
+      <td><Player data={run.run.players[0]??{}}/></td>{/*Player*/}
+      <td>{run.run.times.realtime_noloads_t?TimeDisplay(run.run.times.realtime_noloads_t):""}</td>{/*Time without loads*/}
+      <td>{TimeDisplay(run.run.times.realtime_t)}</td>{/*Time with loads*/}
+      <td>{<Platform data={run.run.system.platform}/>}</td>{/*Platform*/}
+      <td>{<Version data={run.run.values.p85me3lg}/>}</td>{/*Version*/}
       <td>{run.run.date}</td>{/*Date*/}
-      <td>{run.run.videos?.links[0].uri}</td>{/*Video*/}
+      <td>{run.run.videos?.links[0].uri&&<a href={run.run.videos?.links[0].uri}><CameraReelsFill/></a>}</td>{/*Video*/}
     </tr>)}
     </tbody>
   </Table>
