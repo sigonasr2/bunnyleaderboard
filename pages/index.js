@@ -89,7 +89,7 @@ function getPlayer(playerID) {
 function Player(p) {
   const {data}=p
   const playerData=getPlayer(data.id)
-  return <a href={playerData.link} className="leaderboardName"><img className="scoreboard_icon" width={24} height={24} src={playerData.icon??playerData.image}/> {playerData.name&&<span className="playerName"><Gradient dir="left-to-right" from={playerData.color1} to={playerData.color2}>{data.rel==="guest"?data.name:playerData.name}</Gradient></span>}</a>
+  return <a key={data.id} href={playerData.link} className="leaderboardName"><img className="scoreboard_icon" width={24} height={24} src={playerData.icon??playerData.image}/> {playerData.name&&playerData.name.length>0&&<span className="playerName"><Gradient dir="left-to-right" from={playerData.color1} to={playerData.color2}>{data.rel==="guest"?data.name:playerData.name}</Gradient></span>}</a>
 }
 
 function TimeDisplay(time) {
