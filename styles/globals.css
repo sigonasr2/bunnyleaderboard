@@ -4,6 +4,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  background-image:url('https://www.speedrun.com/themeasset/k8kn0l84/background?v=838ae93');
 }
 
 a {
@@ -17,4 +18,13 @@ a {
 
 .scoreboard_icon{
   border: 0px;
+}
+
+
+.playerName{
+  font-weight:bold;
+}
+
+.container{
+  background:rgba(255,255,255,0.6);
 }

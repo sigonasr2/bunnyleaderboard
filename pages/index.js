@@ -8,6 +8,8 @@ import useSWR from 'swr'
 import Table from 'react-bootstrap/Table'
 import Spinner from 'react-bootstrap/Spinner'
 import {CameraReelsFill} from 'react-bootstrap-icons'
+import Gradient from 'rgt'
+import Container from 'react-bootstrap/Container'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -30,8 +32,8 @@ function VariableSelector(p) {
   }
 
   return <>
-    <ToggleButtonGroup type="radio" className="mb-2">
-      {displayValues.map((value,i)=><ToggleButton key={i} variant={selected===value[1]?"primary":"outline-primary"} onClick={handleChange} id={value[1]}>{value[0].label}</ToggleButton>)}
+    <ToggleButtonGroup variant="dark" type="radio" className="mb-2">
+      {displayValues.map((value,i)=><ToggleButton variant="dark"  key={i} variant={selected===value[1]?"dark":"outline-dark"} onClick={handleChange} id={value[1]}>{value[0].label}</ToggleButton>)}
     </ToggleButtonGroup><br/>
   </>
 }
@@ -87,7 +89,7 @@ function getPlayer(playerID) {
 function Player(p) {
   const {data}=p
   const playerData=getPlayer(data.id)
-  return <><img className="scoreboard_icon" width={24} height={24} src={playerData.icon??playerData.image}/> {data.rel==="guest"?data.name:playerData.name}</>
+  return <><img className="scoreboard_icon" width={24} height={24} src={playerData.icon??playerData.image}/> {playerData.name&&<span className="playerName"><Gradient dir="left-to-right" from={playerData.color1} to={playerData.color2}>{data.rel==="guest"?data.name:playerData.name}</Gradient></span>}</>
 }
 
 function TimeDisplay(time) {
@@ -113,7 +115,7 @@ function Version(p) {
 
 function Leaderboard(p) {
   const {data} = p
-  return <Table striped bordered hover size="sm">
+  return <Table striped bordered hover size="sm" variant="dark">
     <thead>
       <tr>
         <th>#</th>
@@ -180,14 +182,14 @@ export default function Home(p) {
     setAppendStr(appendStr)
   },[selectedTab,selectionValues])
 
-  return <><Tabs className="mb-3" onSelect={(e)=>{setSelectedTab(e)}}>
+  return <Container><Tabs variant="dark" className="mb-3" onSelect={(e)=>{setSelectedTab(e)}}>
     {CATEGORIES.map((cat)=><Tab key={cat.id} eventKey={cat.id} title={cat.name} id={cat.name}>
       {/*cat.rules*/}
       {VARIABLES.filter((v)=>(v.category===cat.id||v.category===null)&&v["is-subcategory"]).map((v,i)=><VariableSelector key={v.id} category={cat} selectionID={i} selectionValues={selectionValues} setSelectionValues={setSelectionValues} values={v}/>)}
     </Tab>)}
   </Tabs>
   {<Leaderboard data={data}/>}
-  </>
+  </Container>
 }
 
 export async function getStaticProps() {

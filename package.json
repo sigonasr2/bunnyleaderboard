@@ -16,6 +16,7 @@
     "react-bootstrap": "^2.0.0",
     "react-bootstrap-icons": "^1.6.1",
     "react-dom": "17.0.2",
+    "rgt": "^1.0.7",
     "swr": "^1.0.1"
   },
   "devDependencies": {
