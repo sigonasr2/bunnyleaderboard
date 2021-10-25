@@ -89,7 +89,7 @@ function getPlayer(playerID) {
 function Player(p) {
   const {data}=p
   const playerData=getPlayer(data.id)
-  return <><img className="scoreboard_icon" width={24} height={24} src={playerData.icon??playerData.image}/> {playerData.name&&<span className="playerName"><Gradient dir="left-to-right" from={playerData.color1} to={playerData.color2}>{data.rel==="guest"?data.name:playerData.name}</Gradient></span>}</>
+  return <a href={playerData.link} className="leaderboardName"><img className="scoreboard_icon" width={24} height={24} src={playerData.icon??playerData.image}/> {playerData.name&&<span className="playerName"><Gradient dir="left-to-right" from={playerData.color1} to={playerData.color2}>{data.rel==="guest"?data.name:playerData.name}</Gradient></span>}</a>
 }
 
 function TimeDisplay(time) {
@@ -129,7 +129,7 @@ function Leaderboard(p) {
       </tr>
     </thead>
     <tbody>
-    {!data?<tr><td colSpan="8"><Spinner animation="grow" />Buns are loading...</td></tr>:data?.data.runs.map((run)=><tr key={run.run.id}>
+    {!data?<tr><td colSpan="8"><Spinner animation="grow" />Buns are loading...</td></tr>:data?.data.runs.map((run)=><tr className="leaderboardRow" onClick={()=>{window.location.href=run.run.weblink}}>
       <td>{run.place}</td>{/*#*/}
       <td><Player data={run.run.players[0]??{}}/></td>{/*Player*/}
       <td>{run.run.times.realtime_noloads_t?TimeDisplay(run.run.times.realtime_noloads_t):""}</td>{/*Time without loads*/}

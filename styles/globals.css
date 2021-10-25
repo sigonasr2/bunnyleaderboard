@@ -9,7 +9,7 @@ body {
 
 a {
   color: inherit;
-  text-decoration: none;
+  text-decoration: none !important; 
 }
 
 * {
@@ -27,4 +27,12 @@ a {
 
 .container{
   background:rgba(255,255,255,0.6);
+}
+
+.leaderboardRow:hover{
+  cursor:pointer;
+}
+.leaderboardName:hover{
+  text-decoration:underline !important;
+  text-decoration-color:white !important;
 }
